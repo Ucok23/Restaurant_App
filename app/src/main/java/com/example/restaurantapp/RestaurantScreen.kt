@@ -37,6 +37,13 @@ fun RestaurantsScreen() {
 
 @Composable
 fun RestaurantItem(item: Restaurant) {
+    val favoriteState = remember {
+        mutableStateOf(false)
+    }
+
+    val icon = if (favoriteState.value) Icons.Filled.Favorite
+               else Icons.Filled.FavoriteBorder
+
     Card(elevation = 4.dp,
          modifier = Modifier.padding(8.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically,
@@ -44,37 +51,19 @@ fun RestaurantItem(item: Restaurant) {
             RestaurantIcon(
                 Icons.Filled.Place,
                 Modifier.weight(0.15f)
-            )
+            ) {}
             RestaurantDetails(
                 item.title,
                 item.description,
                 Modifier.weight(0.70f)
             )
-            FavoriteIcon(Modifier.weight(0.15f))
-        }
-    }
-}
-
-@Composable
-private fun FavoriteIcon(modifier: Modifier) {
-    val favoriteState = remember {
-        mutableStateOf(false)
-    }
-
-    val icon = if (favoriteState.value)
-        Icons.Filled.Favorite
-    else
-        Icons.Filled.FavoriteBorder
-
-    Image(
-        imageVector = icon,
-        contentDescription = "Favorite restaurant icon",
-        modifier = modifier
-            .padding(8.dp)
-            .clickable {
+            RestaurantIcon(
+                icon,
+                Modifier.weight(0.15f)) {
                 favoriteState.value = !favoriteState.value
             }
-    )
+        }
+    }
 }
 
 @Composable
@@ -93,7 +82,13 @@ fun RestaurantDetails(title: String, description: String, modifier: Modifier) {
 }
 
 @Composable
-fun RestaurantIcon(icon: ImageVector, modifier: Modifier) {
-    Image(imageVector = icon, contentDescription = "Restaurant icon",
-          modifier = modifier.padding(8.dp))
+fun RestaurantIcon(icon: ImageVector, modifier: Modifier, onClick: () -> Unit) {
+    Image(imageVector = icon,
+          contentDescription = "Restaurant icon",
+          modifier = modifier
+              .padding(8.dp)
+              .clickable {
+                  onClick()
+              }
+    )
 }
